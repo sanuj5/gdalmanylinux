@@ -23,6 +23,11 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Install pip, setuptools, wheel
+        run: |
+          python -m ensurepip --upgrade
+          python -m pip install --upgrade pip setuptools wheel
+
       - name: Install build dependencies
         run: |
           sudo apt-get update
@@ -71,7 +76,6 @@ jobs:
 
       - name: Build GDAL Python wheel
         run: |
-          pip install --upgrade pip setuptools wheel
           GDAL_VERSION=3.10.2 pip wheel GDAL==3.10.2 --wheel-dir dist
 
       - name: Upload wheel
