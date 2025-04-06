@@ -63,6 +63,7 @@ jobs:
       - name: Build GDAL from source
         run: |
           cd gdal
+          ls -ltr
           ./configure --prefix=/usr/local --with-python
           make -j$(nproc)
           sudo make install
