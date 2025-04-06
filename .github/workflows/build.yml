@@ -23,29 +23,58 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Add GDAL 3.10.2 PPA
+      - name: Install dependencies
         run: |
-          sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y
           sudo apt-get update
-
-      - name: Install GDAL 3.10.2 and dependencies
-        run: |
           sudo apt-get install -y \
-            gdal-bin=3.10.2+dfsg-1~* \
-            libgdal-dev=3.10.2+dfsg-1~* \
+            build-essential \
             python3-dev \
-            build-essential
+            python3-pip \
+            wget \
+            curl \
+            git \
+            unzip \
+            libtiff-dev \
+            libjpeg-dev \
+            libgif-dev \
+            libsqlite3-dev \
+            libpq-dev \
+            libcurl4-openssl-dev \
+            libgeos-dev \
+            libspatialite-dev \
+            libproj-dev \
+            libopenjp2-7-dev \
+            libwebp-dev \
+            libxml2-dev \
+            libexpat1-dev \
+            libxerces-c-dev \
+            libpoppler-dev \
+            libpoppler-private-dev \
+            libfreexl-dev \
+            libhdf5-serial-dev \
+            libnetcdf-dev \
+            liblzma-dev \
+            libzstd-dev \
+            cmake \
+            ninja-build
 
-      - name: Set environment paths for GDAL headers
+      - name: Download and build GDAL from source
         run: |
-          echo "CPLUS_INCLUDE_PATH=/usr/include/gdal" >> $GITHUB_ENV
-          echo "C_INCLUDE_PATH=/usr/include/gdal" >> $GITHUB_ENV
+          wget https://github.com/OSGeo/gdal/releases/download/v3.10.2/gdal-3.10.2.tar.gz
+          tar -xzf gdal-3.10.2.tar.gz
+          cd gdal-3.10.2
+          ./configure
+          make -j$(nproc)
+          sudo make install
+          sudo ldconfig
 
-      - name: Install pip dependencies and build GDAL wheel
+      - name: Install Python GDAL bindings and build wheel
         run: |
+          export CPLUS_INCLUDE_PATH=/usr/local/include
+          export C_INCLUDE_PATH=/usr/local/include
           pip install --upgrade pip setuptools wheel
-          pip install GDAL==3.10.2
-          pip wheel GDAL==3.10.2 --wheel-dir dist
+          GDAL_VERSION=3.10.2 pip install GDAL==3.10.2
+          GDAL_VERSION=3.10.2 pip wheel GDAL==3.10.2 --wheel-dir dist
 
       - name: Upload wheel
         uses: actions/upload-artifact@v4
