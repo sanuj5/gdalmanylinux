@@ -18,17 +18,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build GDAL wheel using make
-        uses: addnab/docker-run-action@v3
-        with:
-          image: quay.io/pypa/manylinux_2_28_x86_64
-          options: --user root --volume ${{ github.workspace }}:/io
-          run: |
-            cd /io
-            make wheels
+      - name: Build wheels using Docker
+        run: |
+          make wheels
 
       - name: Upload wheel
         uses: actions/upload-artifact@v4
