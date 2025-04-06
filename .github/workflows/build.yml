@@ -18,9 +18,32 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Build wheels using Docker
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.12"  # Change as needed
+
+      - name: Install system dependencies
         run: |
-          make wheels
+          sudo apt-get update
+          sudo apt-get install -y \
+            gdal-bin \
+            libgdal-dev \
+            python3-pip \
+            python3-dev \
+            build-essential
+
+      - name: Install Python dependencies
+        run: |
+          export CPLUS_INCLUDE_PATH=/usr/include/gdal
+          export C_INCLUDE_PATH=/usr/include/gdal
+          pip install --upgrade pip
+          pip install wheel setuptools
+          pip install GDAL==$(gdal-config --version)
+
+      - name: Build wheel
+        run: |
+          pip wheel GDAL==$(gdal-config --version) --wheel-dir dist
 
       - name: Upload wheel
         uses: actions/upload-artifact@v4
