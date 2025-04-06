@@ -28,7 +28,7 @@ jobs:
           options: --user root --volume ${{ github.workspace }}:/io
           run: |
             cd /io
-            make wheel
+            make wheels
 
       - name: Upload wheel
         uses: actions/upload-artifact@v4
