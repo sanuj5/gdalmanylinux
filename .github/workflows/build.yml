@@ -11,8 +11,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.12]
-        gdal-version: [3.10.2]
+        python-version: [3.10]
+        gdal-version: [3.8.4]
 
     steps:
       - name: Checkout repo
