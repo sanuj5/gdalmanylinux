@@ -46,7 +46,7 @@ jobs:
           python setup.py bdist_wheel
 
       - name: Upload wheel
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: gdal-wheel-${{ matrix.python-version }}
           path: dist/*.whl
